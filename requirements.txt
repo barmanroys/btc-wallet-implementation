@@ -1,7 +1,7 @@
 bitcoinlib==0.7.2 # Interface with blockchain
 mnemonic==0.21 # Process seed phrase
-qrcode # To generate QR code
-Pillow # Image processing
+qrcode==8.0 # To generate QR code
+Pillow==11.1.0 # Image processing
 
 # For development only
 # jupyter
