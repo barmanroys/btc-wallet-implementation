@@ -10,7 +10,7 @@ from typing import Optional
 from uuid import uuid1
 
 import qrcode
-from bitcoinlib.wallets import Wallet, WalletKey
+from bitcoinlib.wallets import Wallet
 from mnemonic import Mnemonic
 
 logging.basicConfig(format='%(asctime)s | %(levelname)s: %(message)s',
@@ -49,7 +49,6 @@ class CustomWallet(WalletInterface):
             seed = mnemo.generate()  # Generate random seed if not supplied as part of recovery
             logging.debug(msg=f'Note down the random seed initialised as \n {seed}.')
         self.wallet: Wallet = Wallet.create(name=uuid1().hex, keys=seed)
-        self.res: WalletKey = self.wallet.public_master()
         logging.info(msg=f'Wallet {self.wallet.name} created.')
 
     @staticmethod
@@ -71,14 +70,16 @@ class CustomWallet(WalletInterface):
         Get the extended public key.
         If image is true, get the QR code image as a jpg format
         """
-        xpub: str = self.res.wif
+        xpub: str = self.wallet.public_master().wif
         return self._convert_string_to_qr_(raw_str=xpub) if image else xpub.encode()
 
     def get_address(self, image: bool = False) -> bytes:
         """Get a P2WPKH address to receive payment."""
-        address: str = self.res.address
+        self.wallet.scan()  # This scans the blockchain to fetch latest transactions
+        address: str = self.wallet.keys()[0].address  # Next unused address
         return self._convert_string_to_qr_(raw_str=address) if image else address.encode()
 
     def balance(self) -> int:
         """Balance Satoshis from UTXO"""
-        return self.res.balance(as_string=False)
+        self.wallet.scan()  # This scans the blockchain to fetch latest transactions
+        return round(number=self.wallet.balance())

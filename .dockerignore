@@ -22,3 +22,4 @@ Dockerfile
 **._*
 deploy.sh
 **.log
+**.toml
