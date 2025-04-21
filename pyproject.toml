@@ -1,7 +1,7 @@
 [project]
 name = "btc-wallet-implementation"
 version = "0.1.0"
-description = "Add your description here"
+description = "Implementation of a custom bitcoin wallet in python"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = []
